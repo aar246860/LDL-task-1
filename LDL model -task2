@@ -1,0 +1,143 @@
+import numpy as np
+from scipy.special import kv
+from scipy.optimize import minimize
+params = {'Q': 400, 'T': 10, 'S': 0.0001, 'K_prime': 0.0001, 'B_prime': 50, 'rw': 0.2, 'rc': 0.2, 'tau_q': 0.2, 'tau_s': 2, 'Sk': 0, 'r': 10}
+Q, T, S, K_prime, B_prime, rw, rc, tq, ts, Sk = 400, 10, 0.0001, 0.0001, 50, 0.2, 0.2, 0.2, 2, 0
+r = 10
+def laplace_domain_solution(p, params):
+    # 1. 計算中間參數 (這些是您公式中的 lambda 與其他係數)
+    kappa = params['K_prime']*params['rw']**2 / (params['B_prime'] * params['T'])
+    tau_qD = (params['T'] * params['tau_q']) / (params['S'] * params['rw']**2)
+    tau_sD = (params['T'] * params['tau_s']) / (params['S'] * params['rw']**2)
+    
+    # 計算 Lambda (您代碼中的 k)
+    lambda_val = np.sqrt((p + kappa) * (1 + p * tau_qD) / (1 + p * tau_sD))
+    
+    # 2. 計算貝索函數
+    K0 = kv(0, lambda_val)
+    K1 = kv(1, lambda_val)
+    
+    # 3. 定義 CD 和 rD
+    CD = params['rc']**2 / (2 * params['S'] * (params['rw']**2))
+    rD = params['r'] / params['rw']
+    
+    # 4. 計算 SD (修正您的公式)
+    # 注意：這裡使用 kv(0, lambda_val * rD) 來正確計算 K0(lambda * rD)
+    num = 2 * kv(0, lambda_val * rD)
+    den = (CD * (p**2) * K0) + (p * (1 + CD * p * params['Sk']) * lambda_val * K1)
+    
+    return num / den
+# def laplace_domain_solution(p):
+#     rD = r / rw
+#     k = K_prime / (B_prime * T)
+#     CD = rc ** 2 / (2 * S * rw * rw)
+#     SD=(2.0*(k0(k))*(k*rD))/((CD*(p**2)*(k0(k))*k)+k*p*(1.0+CD*p*Sk)*(k1(k))*k)
+#     return SD
+import numpy as np
+from scipy.special import factorial
+
+def get_stehfest_v(i, N):
+    """計算 Stehfest 權重係數 Vi"""
+    n2 = N // 2
+    v = 0
+    # 這是 Stehfest 的標準加權公式
+    for k in range((i + 1) // 2, min(i, n2) + 1):
+        num = (k**n2) * factorial(2 * k)
+        den = factorial(n2 - k) * factorial(k) * factorial(k - 1) * \
+              factorial(i - k) * factorial(2 * k - i)
+        v += num / den
+    
+    # 加上正負號項 (-1)^(N/2 + i)
+    return ((-1)**(n2 + i)) * v
+
+def stehfest_inversion(func, t, params, N=12):
+    ln2 = np.log(2.0)
+    s = 0.0
+    for i in range(1, N + 1):
+        # --- 修正處：呼叫我們剛剛定義好的權重計算 ---
+        v = get_stehfest_v(i, N) 
+        # ----------------------------------------
+        p = i * ln2 / t
+        s += v * func(p, params)
+    return (ln2 / t) * s
+
+# 設定一系列的時間點 
+times = np.logspace(-5, 2, 100)
+drawdowns = [] # 準備一個空籃子裝水位數據
+
+true_params = {'T': 10, 'S': 0.0001, 'tau_q': 0.2, 'tau_s': 2}
+def get_model_drawdown(params_values, times, base_params):
+    # 將陣列形式的參數對應回字典
+    T, S, tau_q, tau_s = params_values
+    p_temp = base_params.copy()
+    p_temp.update({'T': T, 'S': S, 'tau_q': tau_q, 'tau_s': tau_s})
+    
+    drawdowns = []
+    for t in times:
+        tD = T * t / (S * p_temp['rw']**2)
+        sD = stehfest_inversion(laplace_domain_solution, tD, p_temp)
+        s = sD * (p_temp['Q'] / (4 * np.pi * T))
+        
+        # 保留您的偵錯機制
+        if np.isnan(s) or np.isinf(s):
+            s = 0  # 在最佳化過程中，建議將錯誤值設為 0 或極大值，避免程式中斷
+        
+        drawdowns.append(s)
+    return np.array(drawdowns)
+
+y_true = get_model_drawdown([true_params['T'], true_params['S'], true_params['tau_q'], true_params['tau_s']], times, params)
+noise = np.random.normal(0, 0.05 * np.max(y_true), size=len(y_true)) # 2% 標準差的雜訊
+y_obs = y_true + noise
+
+def objective(guess):
+    y_pred = get_model_drawdown(guess, times, params)
+    return np.sqrt(np.mean((y_obs - y_pred)**2))
+initial_guess = [8, 0.0002, 0.1, 1] 
+bounds = [(5, 15), (1e-6, 1e-2), (0.01, 0.5), (0.1, 5)]
+res = minimize(objective, initial_guess, bounds=bounds, method='L-BFGS-B')
+fitted_params = res.x
+y_fitted = get_model_drawdown(fitted_params, times, params)
+
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(8, 6))
+
+# 1. 畫出真實觀測數據 (散佈點，用紅色表示)
+plt.scatter(times, y_obs, color='red', label='Observed Data (with noise)', s=15, alpha=0.6)
+
+# 2. 畫出最佳化後的擬合曲線 (實線，用藍色表示)
+plt.semilogx(times, y_fitted, color='blue', label='Fitted LDL Model', linewidth=2)
+
+# 3. 圖表細節設定
+plt.title("Observed vs Fitted Drawdown")
+plt.xlabel("Time (h)")  # 對數座標軸下，直接寫 Time(h) 即可
+plt.ylabel("Drawdown (m)")
+plt.legend()            # 顯示圖例
+plt.grid(True, which="both", ls="-", alpha=0.5) # 加上網格會更專業
+plt.show()
+
+# 1. 前面所有的定義 (laplace, stehfest, get_model_drawdown)
+# 2. 最佳化計算 (minimize)
+# 3. 繪圖區塊 (plt.figure, plt.scatter, plt.semilogx)
+# 4. 顯示圖表
+plt.show() 
+
+# 5. --- 在這裡貼上報告輸出程式碼 ---
+# 確保這些 print 指令在 plt.show() 之後執行
+y_pred = get_model_drawdown(fitted_params, times, params)
+residuals = y_obs - y_pred
+see = np.sqrt(np.sum(residuals**2) / (len(y_obs) - len(fitted_params)))
+me = np.mean(residuals)
+
+print("\n========================================")
+print("參數推估與驗證報告")
+print("----------------------------------------")
+labels = ['導水係數 T', '儲水係數 S', '通量遲滯 tau_q', '梯度遲滯 tau_s']
+true_values = [10.0, 0.0001, 0.2, 2.0]
+
+for i in range(len(fitted_params)):
+    print(f"{labels[i]}: {fitted_params[i]:.4f} (真值: {true_values[i]})")
+
+print("----------------------------------------")
+print(f"均方根誤差 (RSME): {see:.6f} m")
+print("========================================")
