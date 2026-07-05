@@ -5,7 +5,7 @@ Q, T, S, K_prime, B_prime, rw, rc, tq, ts, Sk = 400, 10, 0.0001, 0.0001, 50, 0.2
 r = 10
 def laplace_domain_solution(p, params):
     # 1. 計算中間參數 (這些是您公式中的 lambda 與其他係數)
-    kappa = params['K_prime'] / (params['B_prime'] * params['T'])
+    kappa = params['K_prime'] * params['rw']**2 / (params['B_prime'] * params['T'])
     tau_qD = (params['T'] * params['tau_q']) / (params['S'] * params['rw']**2)
     tau_sD = (params['T'] * params['tau_s']) / (params['S'] * params['rw']**2)
     
@@ -60,12 +60,12 @@ def stehfest_inversion(func, t, params, N=12):
         s += v * func(p, params)
     return (ln2 / t) * s
 
-# 設定一系列的時間點 (從 0.1 到 100000000 小時，取 50 個點)
-times = np.logspace(-1, 8, 50)
+times = np.logspace(-5, 2, 100)
 drawdowns = [] # 準備一個空籃子裝水位數據
 
 for t in times:
-    sD = stehfest_inversion(laplace_domain_solution, t, params)
+    tD = params['T'] * t / (params['S'] * params['rw']**2)
+    sD = stehfest_inversion(laplace_domain_solution, tD, params)
     s = sD * (params['Q'] / (4 * np.pi * params['T']))
     
     # 偵錯機制
