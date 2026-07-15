@@ -1,0 +1,4 @@
+interface:
+  display_name: "Research Manim Video Summarizer"
+  short_description: "Build rigorous, collision-checked explanatory research animations"
+  default_prompt: "Use $research-manim-video-summarizer to derive evidence-located Bxx background premises and Mxx irreducible method operations, give every premise and operation its own independently implemented geometry-first scene, build a public-talk tension-to-resolution throughline, reveal geometry before notation, enforce full-scene runtime layout coverage, and inspect distinct entry, midpoint, and settled frame evidence before playback."

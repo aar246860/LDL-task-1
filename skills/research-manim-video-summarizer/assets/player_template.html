@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{TITLE}}</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #08111f;
+      --text: #e6edf7;
+      --muted: #a8b4c4;
+      --line: #263a57;
+      --accent: #63b3ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      display: grid;
+      place-items: center;
+      padding: 32px;
+    }
+    main { width: min(1080px, 100%); }
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(24px, 3vw, 40px);
+      letter-spacing: 0;
+    }
+    p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #020712;
+      border: 1px solid var(--line);
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid color-mix(in srgb, var(--accent), transparent 45%);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>{{TITLE}}</h1>
+    <p>{{DESCRIPTION}}</p>
+    <video controls preload="metadata" poster="{{POSTER}}">
+      <source src="{{VIDEO}}" type="video/mp4">
+      Your browser cannot play this MP4 file.
+    </video>
+    <div class="actions">
+      <a href="{{VIDEO}}">Open MP4 directly</a>
+      <a href="{{POSTER}}">Open preview sheet</a>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "title": "Atomic research story fixture",
+  "description": "Independent geometry-first research animation with one background premise or irreducible method operation per scene.",
+  "generated_at": "2026-07-13T19:43:37.957365+00:00",
+  "artifacts": {
+    "mp4": "storyboard_reviewed_video.mp4",
+    "contact_sheet": "storyboard_reviewed_video_contact_sheet.png",
+    "html": "storyboard_reviewed_video.html",
+    "qa_notes": "storyboard_reviewed_video_qa.md"
+  },
+  "ffprobe": "codec_name=h264\nprofile=Constrained Baseline\nwidth=854\nheight=480\npix_fmt=yuv420p\nlevel=31\nduration=26.000000\nnb_frames=780\nformat_name=mov,mp4,m4a,3gp,3g2,mj2\nduration=26.000000\nsize=261113\n"
+}

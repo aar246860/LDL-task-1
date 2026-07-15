@@ -1,0 +1,99 @@
+{
+  "reviewer": "Independent fixture reviewer",
+  "reviewer_role": "independent source auditor",
+  "reviewed_at": "2026-07-14T03:39:59+08:00",
+  "review_method": "source passage comparison",
+  "audit_scope": "all background premises, method operations, and scene scientific claims",
+  "decision": "pass",
+  "source_artifact_sha256": "f0af0712e6ceeadac2157d9c431e7a1d67e6e118cd0242c958868c6f79665a3a",
+  "storyboard_sha256": "d61d049a11ed33959302a1c71596d964a70f66e384ad039d02e025788e00c270",
+  "background_items": [
+    {
+      "id": "B01",
+      "source_locator": "fixture source, Problem statement and Fig. 1",
+      "source_excerpt": "Paired pile tests with identical nominal designs produced visibly different load-displacement responses.",
+      "claim_anchor_terms": ["identical", "responses"],
+      "independent_premise_count": 1,
+      "semantic_match": "pass"
+    },
+    {
+      "id": "B02",
+      "source_locator": "fixture source, Methods Sec. 2",
+      "source_excerpt": "Each test is represented on common axes by one measured coordinate and one predicted coordinate.",
+      "claim_anchor_terms": ["common axes", "predicted coordinate"],
+      "independent_premise_count": 1,
+      "semantic_match": "pass"
+    },
+    {
+      "id": "B03",
+      "source_locator": "fixture source, Methods Sec. 3 and Fig. 2",
+      "source_excerpt": "A diagonal benchmark relation supplies the reference required to interpret signed error.",
+      "claim_anchor_terms": ["diagonal benchmark", "error"],
+      "independent_premise_count": 1,
+      "semantic_match": "pass"
+    }
+  ],
+  "method_items": [
+    {
+      "id": "M01",
+      "source_locator": "fixture source, Methods Sec. 3.1",
+      "source_excerpt": "Measured capacity is defined at the visible peak of the measured response curve.",
+      "claim_anchor_terms": ["measured response curve", "visible peak", "measured capacity"],
+      "irreducible_operation_count": 1,
+      "semantic_match": "pass"
+    },
+    {
+      "id": "M02",
+      "source_locator": "fixture source, Methods Sec. 3.1",
+      "source_excerpt": "Predicted capacity is selected at the corresponding peak of the comparable prediction curve, and both capacities have units of kilonewtons.",
+      "claim_anchor_terms": ["capacity", "peak"],
+      "irreducible_operation_count": 1,
+      "semantic_match": "pass"
+    },
+    {
+      "id": "M03",
+      "source_locator": "fixture source, Eq. 1",
+      "source_excerpt": "The dimensionless transformation ratio is formed by dividing measured capacity by predicted capacity.",
+      "claim_anchor_terms": ["capacity", "ratio"],
+      "irreducible_operation_count": 1,
+      "semantic_match": "pass"
+    },
+    {
+      "id": "M04",
+      "source_locator": "fixture source, Methods Sec. 3.2",
+      "source_excerpt": "Repeated transformation ratios are aggregated on a common number line to estimate their empirical distribution.",
+      "claim_anchor_terms": ["common number line", "empirical distribution"],
+      "irreducible_operation_count": 1,
+      "semantic_match": "pass"
+    },
+    {
+      "id": "M05",
+      "source_locator": "fixture source, Results Fig. 3",
+      "source_excerpt": "Two uncertainty interpretations are aligned on the same ratio axis.",
+      "claim_anchor_terms": ["uncertainty interpretations", "align"],
+      "irreducible_operation_count": 1,
+      "semantic_match": "pass"
+    },
+    {
+      "id": "M06",
+      "source_locator": "fixture source, Calibration Sec. 4",
+      "source_excerpt": "Calibration is applied to the endpoints of the original confidence interval.",
+      "claim_anchor_terms": ["confidence interval", "calibration"],
+      "irreducible_operation_count": 1,
+      "semantic_match": "pass"
+    }
+  ],
+  "scene_items": [
+    {"scene": 1, "background_premise_count": 1, "method_operation_count": 0, "undeclared_scientific_content": "none", "source_claims_checked": "pass"},
+    {"scene": 2, "background_premise_count": 1, "method_operation_count": 0, "undeclared_scientific_content": "none", "source_claims_checked": "pass"},
+    {"scene": 3, "background_premise_count": 1, "method_operation_count": 0, "undeclared_scientific_content": "none", "source_claims_checked": "pass"},
+    {"scene": 4, "background_premise_count": 0, "method_operation_count": 1, "undeclared_scientific_content": "none", "source_claims_checked": "pass"},
+    {"scene": 5, "background_premise_count": 0, "method_operation_count": 1, "undeclared_scientific_content": "none", "source_claims_checked": "pass"},
+    {"scene": 6, "background_premise_count": 0, "method_operation_count": 1, "undeclared_scientific_content": "none", "source_claims_checked": "pass"},
+    {"scene": 7, "background_premise_count": 0, "method_operation_count": 1, "undeclared_scientific_content": "none", "source_claims_checked": "pass"},
+    {"scene": 8, "background_premise_count": 0, "method_operation_count": 1, "undeclared_scientific_content": "none", "source_claims_checked": "pass"},
+    {"scene": 9, "background_premise_count": 0, "method_operation_count": 1, "undeclared_scientific_content": "none", "source_claims_checked": "pass"},
+    {"scene": 10, "background_premise_count": 0, "method_operation_count": 0, "undeclared_scientific_content": "none", "source_claims_checked": "pass"}
+  ],
+  "unmapped_source_items": []
+}
